@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--[if IE 7 ]><html class="ie7 oldie"><![endif]-->
+<!--[if IE 8 ]><html class="ie8 oldie"><![endif]-->
+<!--[if IE 9 ]><html class="ie9 oldie"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html><!--<![endif]-->
+<head>
+  <title>Calculator</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+
+  <style type="text/css">
+  #wrapper {
+    border: 1px solid #ccc;
+    float: left;
+    width: 340px;
+    height: 260px;
+    padding: 20px 10px;
+    background-color: grey;
+  }
+  .output-area,
+  .input-area   {
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  input {
+    float: left;
+    width: 230px;
+    margin: 0 40px;
+    padding: 5px;
+    height: 40px;
+    border: 1px solid #ccc;
+    text-align: right;
+    font-size: 14px;
+  }
+  ul {
+    float: left;
+    width: 330px;
+    margin: 0;
+    list-style: none;
+  }
+  li {
+    float: left;
+    width: 100px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  button {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+  }
+
+  </style>
+
+</head>
+<body>      
+  <!-- wrapper -->
+  <div id="wrapper" >
+      <div class="output-area">
+        <input type="text" id="result" value="0">
+      </div>
+      <div class="input-area">
+        <ul id="menu">
+          <li><button value="1">1</button></li>
+          <li><button value="2">2</button></li>
+          <li><button value="3">3</button></li>
+          <li><button value="4">4</button></li>
+          <li><button value="5">5</button></li>
+          <li><button value="6">6</button></li>
+          <li><button value="7">7</button></li>
+          <li><button value="8">8</button></li>
+          <li><button value="9">9</button></li>
+          <li><button data-action="plus">+</button></li>
+          <li><button data-action="minus">-</button></li>
+          <li><button data-action="multiply">*</button></li>
+          <li><button data-action="divide">/</button></li>
+          <li><button data-action="equal">=</button></li>
+          <li><button data-action="clear">c</button></li>
+          <li><button data-action="memoryc">MC</button></li>
+          <li><button data-action="memoryr">MR</button></li>
+          <li><button data-action="memorys">MS</button></li>
+        </ul>        
+
+<script type="text/javascript">
+  var result;
+  var tempPlus;
+  var operationName;
+  var memoryValue; 
+  var eq = false;
+
+  function Menu(elem) {
+    this.plus = function() {
+      //console.log( 'plus' );
+      if(tempPlus){
+            tempPlus = parseInt(tempPlus) + parseInt(result);
+        }else {
+          tempPlus = result;
+        }
+      result = 0;
+      operationName = "operationPlus";
+
+    };
+    this.minus = function() {
+      //console.log( 'minus' );
+      if(tempPlus){
+            tempPlus = parseInt(tempPlus) - parseInt(result);
+        }else {
+          tempPlus = result;
+        }
+      result = 0;
+       operationName = "operationMinus";
+    };
+    this.multiply = function() {
+     // console.log( 'multiply' );
+      if(tempPlus){
+            tempPlus = parseInt(tempPlus) * parseInt(result);
+        }else {
+          tempPlus = result;
+        }
+      result = 0;
+       operationName = "operationMultiply";
+    };
+    this.divide = function() {
+      //console.log( 'divide' );
+      if(tempPlus){
+            tempPlus = parseInt(tempPlus) / parseInt(result);
+        }else {
+          tempPlus = result;
+        }
+      result = 0;
+       operationName = "operationDivide";
+    };
+    this.equal = function() {
+      //console.log( 'equal' );
+      if(operationName == 'operationPlus'){document.getElementById("result").value = parseInt(tempPlus) + parseInt(result);} 
+      if(operationName == 'operationMinus'){document.getElementById("result").value = parseInt(tempPlus) - parseInt(result);} 
+      if(operationName == 'operationMultiply'){document.getElementById("result").value = parseInt(tempPlus) * parseInt(result);} 
+      if(operationName == 'operationDivide'){document.getElementById("result").value = parseInt(tempPlus) / parseInt(result);} 
+      
+    };
+    this.clear = function() {
+      console.log( 'clear' );
+      result = undefined;
+      tempPlus = undefined;
+      document.getElementById("result").value = 0;
+    };
+    this.memoryc = function() {
+      console.log( 'memoryc' );
+      memoryValue = undefined;
+    };
+    this.memoryr = function() {
+      console.log( 'memoryr' );
+      if(memoryValue){
+          document.getElementById("result").value = memoryValue;
+        }else {
+          document.getElementById("result").value = result;
+        }
+      
+    };
+    this.memorys = function() {
+      console.log( 'memorys' );
+      memoryValue = result;
+
+    };
+
+    var self = this;
+
+    elem.onclick = function(e) {
+      var target = e.target;
+      var action = target.getAttribute('data-action');
+      if (action) {
+        self[action]();
+      }else {
+        var val = target.value;
+        if(result){
+            result += val;
+        }else {
+          result = val;
+        }
+        
+        document.getElementById("result").value = result;
+        console.log(result);
+      }   
+
+    };
+  }
+new Menu(menu);
+
+</script>
+      </div>   
+  
+  </div>  
+  <!-- end of wrapper --> 
+   
+</body>
+</html>

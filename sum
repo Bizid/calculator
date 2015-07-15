@@ -1,0 +1,12 @@
+function sum(a){
+    var result = a;
+    
+    function innerSum(x) {
+       result += x;
+       return innerSum;
+    }
+    innerSum.toString = function () {
+      return result;
+    }
+    return innerSum;
+  } ƒ

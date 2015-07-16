@@ -72,6 +72,8 @@
           <li><button value="7">7</button></li>
           <li><button value="8">8</button></li>
           <li><button value="9">9</button></li>
+          <li><button value="0">0</button></li>
+          <li><button value=".">.</button></li>
           <li><button data-action="plus">+</button></li>
           <li><button data-action="minus">-</button></li>
           <li><button data-action="multiply">*</button></li>
@@ -89,21 +91,33 @@
   var operationName;
   var memoryValue; 
   var eq = false;
+  var leftPart;
+  var rightPart;
+  function calc (x, operationName, y){
+    x = parseInt(x);
+    y = parseInt(y); 
+      switch(operationName){
+             case 'operationPlus': return x + y; 
+             case 'operationMinus': return x - y;
+             case 'operationDivide': return x / y;
+             case 'operationMultiply': return x * y;
+         }
+    };
 
   function Menu(elem) {
     this.plus = function() {
-      //console.log( 'plus' );
       if(tempPlus){
             tempPlus = parseInt(tempPlus) + parseInt(result);
+
         }else {
           tempPlus = result;
         }
+      leftPart = tempPlus;
       result = 0;
       operationName = "operationPlus";
 
     };
     this.minus = function() {
-      //console.log( 'minus' );
       if(tempPlus){
             tempPlus = parseInt(tempPlus) - parseInt(result);
         }else {
@@ -113,7 +127,6 @@
        operationName = "operationMinus";
     };
     this.multiply = function() {
-     // console.log( 'multiply' );
       if(tempPlus){
             tempPlus = parseInt(tempPlus) * parseInt(result);
         }else {
@@ -123,7 +136,6 @@
        operationName = "operationMultiply";
     };
     this.divide = function() {
-      //console.log( 'divide' );
       if(tempPlus){
             tempPlus = parseInt(tempPlus) / parseInt(result);
         }else {
@@ -132,18 +144,34 @@
       result = 0;
        operationName = "operationDivide";
     };
+
     this.equal = function() {
-      //console.log( 'equal' );
-      if(operationName == 'operationPlus'){document.getElementById("result").value = parseInt(tempPlus) + parseInt(result);} 
-      if(operationName == 'operationMinus'){document.getElementById("result").value = parseInt(tempPlus) - parseInt(result);} 
-      if(operationName == 'operationMultiply'){document.getElementById("result").value = parseInt(tempPlus) * parseInt(result);} 
-      if(operationName == 'operationDivide'){document.getElementById("result").value = parseInt(tempPlus) / parseInt(result);} 
-      
+
+      if(eq) {
+          var ss = calc (result,operationName , rightPart);
+          document.getElementById("result").value = ss; 
+          result = ss;
+
+
+        } else {
+          rightPart = result;
+
+          var tt = calc (tempPlus,operationName , result);
+          document.getElementById("result").value = tt; 
+          result = tt;
+        // tempPlus = result;
+          eq = true;
+        }
+
+
+
+
     };
     this.clear = function() {
       console.log( 'clear' );
       result = undefined;
       tempPlus = undefined;
+      eq = false;
       document.getElementById("result").value = 0;
     };
     this.memoryc = function() {
@@ -172,17 +200,17 @@
       var action = target.getAttribute('data-action');
       if (action) {
         self[action]();
-      }else {
+      } else {
         var val = target.value;
         if(result){
-            result += val;
+          result += val;
         }else {
           result = val;
         }
         
-        document.getElementById("result").value = result;
-        console.log(result);
-      }   
+      document.getElementById("result").value = result;
+     // console.log(result);
+    }   
 
     };
   }

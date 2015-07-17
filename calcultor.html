@@ -26,12 +26,24 @@
   }
   input {
     float: left;
-    width: 230px;
-    margin: 0 40px;
+    width: 200px;
+    margin: 0 40px 0 0;
     padding: 5px;
     height: 40px;
     border: 1px solid #ccc;
+    border-left: 0;
     text-align: right;
+    font-size: 14px;
+  }
+  input#mr {
+    float: left;
+    width: 30px;
+    margin: 0 0 0 40px;
+    padding: 5px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-right: 0;
+    text-align: left;
     font-size: 14px;
   }
   ul {
@@ -43,11 +55,11 @@
   li {
     float: left;
     width: 100px;
-    margin-right: 10px;
+    margin-right: 8px;
     margin-bottom: 10px;
   }
   button {
-    width: 25px;
+    width: 35px;
     height: 25px;
     cursor: pointer;
   }
@@ -59,10 +71,11 @@
   <!-- wrapper -->
   <div id="wrapper" >
       <div class="output-area">
+        <input type="text" id="mr">
         <input type="text" id="result" value="0">
       </div>
       <div class="input-area">
-        <ul id="menu">
+        <ul id="calculator">
           <li><button value="1">1</button></li>
           <li><button value="2">2</button></li>
           <li><button value="3">3</button></li>
@@ -77,12 +90,12 @@
           <li><button data-action="plus">+</button></li>
           <li><button data-action="minus">-</button></li>
           <li><button data-action="multiply">*</button></li>
-          <li><button data-action="divide">/</button></li>
-          <li><button data-action="equal">=</button></li>
+          <li><button data-action="divide">/</button></li>         
           <li><button data-action="clear">c</button></li>
           <li><button data-action="memoryc">MC</button></li>
           <li><button data-action="memoryr">MR</button></li>
           <li><button data-action="memorys">MS</button></li>
+          <li><button data-action="equal">=</button></li>
         </ul>        
 
 <script type="text/javascript">
@@ -93,103 +106,99 @@
   var eq = false;
   var leftPart;
   var rightPart;
+
   function calc (x, operationName, y){
     x = parseInt(x);
     y = parseInt(y); 
       switch(operationName){
-             case 'operationPlus': return x + y; 
-             case 'operationMinus': return x - y;
-             case 'operationDivide': return x / y;
-             case 'operationMultiply': return x * y;
-         }
-    };
+         case 'operationPlus': return x + y; 
+         case 'operationMinus': return x - y;
+         case 'operationDivide': return x / y;
+         case 'operationMultiply': return x * y;
+      }
+  };
 
-  function Menu(elem) {
+  function saveTemp (tempOperationName){
+    
+    if(tempPlus){
+        switch(tempOperationName){
+           case 'operationPlus': return tempPlus = parseInt(tempPlus) + parseInt(result); 
+           case 'operationMinus': return tempPlus = parseInt(tempPlus) - parseInt(result);
+           case 'operationDivide': return tempPlus = parseInt(tempPlus) / parseInt(result);
+           case 'operationMultiply': return tempPlus = parseInt(tempPlus) * parseInt(result);
+        }         
+
+      } else {
+        tempPlus = result;
+      }
+      result = 0;
+      operationName = tempOperationName;      
+      return result, tempPlus, operationName;
+  };
+
+  function Calculator(elem) {
+    
     this.plus = function() {
-      if(tempPlus){
-            tempPlus = parseInt(tempPlus) + parseInt(result);
-
-        }else {
-          tempPlus = result;
-        }
-      leftPart = tempPlus;
-      result = 0;
-      operationName = "operationPlus";
-
+      saveTemp ("operationPlus");   
     };
+
     this.minus = function() {
-      if(tempPlus){
-            tempPlus = parseInt(tempPlus) - parseInt(result);
-        }else {
-          tempPlus = result;
-        }
-      result = 0;
-       operationName = "operationMinus";
+      saveTemp ("operationMinus");     
     };
+
     this.multiply = function() {
-      if(tempPlus){
-            tempPlus = parseInt(tempPlus) * parseInt(result);
-        }else {
-          tempPlus = result;
-        }
-      result = 0;
-       operationName = "operationMultiply";
+      saveTemp ("operationMultiply");      
     };
+
     this.divide = function() {
-      if(tempPlus){
-            tempPlus = parseInt(tempPlus) / parseInt(result);
-        }else {
-          tempPlus = result;
-        }
-      result = 0;
-       operationName = "operationDivide";
+      saveTemp ("operationDivide");      
     };
 
-    this.equal = function() {
-
+    this.equal = function() {      
       if(eq) {
-          var ss = calc (result,operationName , rightPart);
-          document.getElementById("result").value = ss; 
-          result = ss;
-
-
+          var resultCalc = calc (result,operationName , rightPart);
+          document.getElementById("result").value = resultCalc; 
+          result = resultCalc;
         } else {
           rightPart = result;
-
-          var tt = calc (tempPlus,operationName , result);
-          document.getElementById("result").value = tt; 
-          result = tt;
+          var tempCalc = calc (tempPlus,operationName , result);
+          document.getElementById("result").value = tempCalc; 
+          result = tempCalc;
         // tempPlus = result;
           eq = true;
         }
-
-
-
-
     };
+
     this.clear = function() {
-      console.log( 'clear' );
+      //console.log( 'clear' );
       result = undefined;
       tempPlus = undefined;
       eq = false;
       document.getElementById("result").value = 0;
     };
+
     this.memoryc = function() {
-      console.log( 'memoryc' );
+     // console.log( 'memoryc' );
       memoryValue = undefined;
+      document.getElementById("mr").value = ""; 
     };
+
     this.memoryr = function() {
-      console.log( 'memoryr' );
+      //console.log( 'memoryr' );
       if(memoryValue){
           document.getElementById("result").value = memoryValue;
+          result = memoryValue ;
         }else {
           document.getElementById("result").value = result;
-        }
-      
+        }      
     };
+
     this.memorys = function() {
-      console.log( 'memorys' );
-      memoryValue = result;
+      if(operationName){
+        //console.log( 'memorys' );
+        memoryValue = result;
+        document.getElementById("mr").value = "M"; 
+      }
 
     };
 
@@ -206,15 +215,12 @@
           result += val;
         }else {
           result = val;
-        }
-        
+        }        
       document.getElementById("result").value = result;
-     // console.log(result);
     }   
-
-    };
-  }
-new Menu(menu);
+  };
+}
+new Calculator(calculator);
 
 </script>
       </div>   

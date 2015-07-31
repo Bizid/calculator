@@ -106,8 +106,9 @@
   var eq = false;
   var leftPart;
   var rightPart;
+  var doubleEq = false;
 
-  function calc (x, operationName, y){
+  function calc(x, operationName, y){
     x = parseInt(x);
     y = parseInt(y); 
       switch(operationName){
@@ -118,8 +119,20 @@
       }
   };
 
-  function saveTemp (tempOperationName){
-    
+  function saveTemp(tempOperationName){
+    if(eq) {
+      console.log("sdfs");
+      console.log(tempOperationName);
+      operationName = tempOperationName; 
+      console.log(operationName);
+      console.log(result);
+      console.log("tempPlus");
+
+      console.log(tempPlus);
+      document.getElementById("result").value = 0; 
+      doubleEq = true;
+    }
+
     if(tempPlus){
         switch(tempOperationName){
            case 'operationPlus': return tempPlus = parseInt(tempPlus) + parseInt(result); 
@@ -132,7 +145,14 @@
         tempPlus = result;
       }
       result = 0;
-      operationName = tempOperationName;      
+      operationName = tempOperationName;  
+
+      console.log("After");
+      console.log(tempOperationName); 
+      console.log(operationName);
+      console.log(result);
+
+      console.log(tempPlus);
       return result, tempPlus, operationName;
   };
 
@@ -143,30 +163,33 @@
     };
 
     this.minus = function() {
-      saveTemp ("operationMinus");     
+      saveTemp("operationMinus");     
     };
 
     this.multiply = function() {
-      saveTemp ("operationMultiply");      
+      saveTemp("operationMultiply");      
     };
 
     this.divide = function() {
-      saveTemp ("operationDivide");      
+      saveTemp("operationDivide");      
     };
 
     this.equal = function() {      
       if(eq) {
-          var resultCalc = calc (result,operationName , rightPart);
+          var resultCalc = calc(result,operationName , rightPart);
           document.getElementById("result").value = resultCalc; 
           result = resultCalc;
         } else {
           rightPart = result;
-          var tempCalc = calc (tempPlus,operationName , result);
+          var tempCalc = calc(tempPlus,operationName , result);
           document.getElementById("result").value = tempCalc; 
           result = tempCalc;
         // tempPlus = result;
           eq = true;
         }
+        console.log(rightPart);
+        console.log(result);
+        console.log(tempCalc);
     };
 
     this.clear = function() {
@@ -174,6 +197,7 @@
       result = undefined;
       tempPlus = undefined;
       eq = false;
+      doubleEq = false;
       document.getElementById("result").value = 0;
     };
 
@@ -212,9 +236,18 @@
       } else {
         var val = target.value;
         if(result){
-          result += val;
-        }else {
+          if (doubleEq) {
+            result = val;
+            console.log( 'CC' );
+          }else {
+            result += val;
+            console.log( 'AA' );  
+          }
+          
+
+        }  else {
           result = val;
+          console.log( 'BB' );
         }        
       document.getElementById("result").value = result;
     }   

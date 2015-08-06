@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<!--[if IE 7 ]><html class="ie7 oldie"><![endif]-->
+<!--[if IE 8 ]><html class="ie8 oldie"><![endif]-->
+<!--[if IE 9 ]><html class="ie9 oldie"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html><!--<![endif]-->
+<head>
+  <title>Calculator</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+
+  <style type="text/css">
+  #wrapper {
+    border: 1px solid #ccc;
+    float: left;
+    width: 340px;
+    height: 330px;
+    padding: 20px 10px;
+    background-color: grey;
+  }
+  .output-area,
+  .input-area   {
+    float: left;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  input {
+    float: left;
+    width: 200px;
+    margin: 0 40px 0 0;
+    padding: 5px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-top: 0;
+    border-left: 0;
+    text-align: right;
+    font-size: 14px;
+  }
+  input#mr {
+    float: left;
+    width: 30px;
+    margin: 0 0 0 40px;
+    padding: 5px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-top: 0;
+    border-right: 0;
+    text-align: left;
+    font-size: 14px;
+  }
+  input#showOperation {
+    float: left;
+    width: 240px;
+    margin: 0 0 0 40px;
+    padding: 5px;
+    height: 15px;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    text-align: right;
+    font-size: 12px;
+  }
+  ul {
+    float: left;
+    width: 330px;
+    margin: 0;
+    list-style: none;
+  }
+  li {
+    float: left;
+    width: 100px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+  }
+  button {
+    width: 35px;
+    height: 25px;
+    cursor: pointer;
+  }
+  [data-action] {
+    background: rgb(135, 130, 139);
+  }
+
+  </style>
+
+</head>
+<body>      
+  <!-- wrapper -->
+  <div id="wrapper" >
+      <div class="output-area">
+        <input type="text" id="showOperation">
+        <input type="text" id="mr">
+        <input type="text" id="result" value="0">
+      </div>
+      <div class="input-area">
+        <ul id="calculator">
+          
+          <li><button data-action="memoryc">Mc</button></li>
+          <li><button data-action="memoryr">Mr</button></li>
+          <li><button data-action="memorys">Ms</button></li>
+          <li><button data-action="clear">C</button></li>
+
+          <li><button data-operation="+" value="+">+</button></li>
+          <li><button data-operation="-" value="-">-</button></li>
+          <li><button data-operation="*" value="*">*</button></li>
+          <li><button data-operation="/" value="/">/</button></li>                 
+          <li><button data-action="equal">=</button></li>
+
+          <li><button value="1">1</button></li>
+          <li><button value="2">2</button></li>
+          <li><button value="3">3</button></li>
+          <li><button value="4">4</button></li>
+          <li><button value="5">5</button></li>
+          <li><button value="6">6</button></li>
+          <li><button value="7">7</button></li>
+          <li><button value="8">8</button></li>
+          <li><button value="9">9</button></li>
+          <li><button value="0">0</button></li>
+          <li><button value=".">.</button></li>
+          
+        </ul>        
+
+<script type="text/javascript">
+  var result = "";
+  var tempPlus;
+  var operationName;
+  var memoryValue; 
+  var eq = false;
+  var leftPart;
+  var rightPart;
+  var doubleEq = false;
+
+
+  var lTemp;
+  var rTemp;
+  var oTemp;
+  var resTemp;
+
+
+  var tmpRes;
+  var re = (/\D/);
+    var lastElement;
+    var splits;
+
+  //save everything in oneString
+
+  function calcEverything (sInput) {
+    //take what we have in sInput and calculate 
+    console.log();
+  }
+
+
+
+
+
+  function calc(x, operationName, y){
+    x = parseInt(x);
+    y = parseInt(y); 
+      switch(operationName){
+         case 'operationPlus': return x + y; 
+         case 'operationMinus': return x - y;
+         case 'operationDivide': return x / y;
+         case 'operationMultiply': return x * y;
+      }
+  };
+
+  function saveTemp(tempOperationName){
+    if(eq) {
+      operationName = tempOperationName; 
+      document.getElementById("result").value = 0; 
+      doubleEq = true;
+      tempPlus = result;
+    }
+
+    if(tempPlus){
+        switch(tempOperationName){
+           case 'operationPlus':  tempPlus = parseInt(tempPlus) + parseInt(result); 
+           case 'operationMinus':  tempPlus = parseInt(tempPlus) - parseInt(result);
+           case 'operationDivide':  tempPlus = parseInt(tempPlus) / parseInt(result);
+           case 'operationMultiply':  tempPlus = parseInt(tempPlus) * parseInt(result);
+        }         
+
+      } else {
+        tempPlus = result;
+
+      }
+
+      result = 0;
+
+      operationName = tempOperationName;  
+
+      return result, tempPlus, operationName;
+  };
+
+  function Calculator(elem) {
+    
+
+    this.equal = function() {   
+      //console.log("esult");    
+      //console.log(result); 
+      //   console.log("after");    
+      //   console.log(result); 
+      if(!eq) {
+        console.log("not equal");
+        // console.log(lastElement);  // Last number we enter
+        tmpRes = result;
+       splits = tmpRes.toString().split(re);
+      //console.log(splits);
+      lastElement = splits.pop();
+      console.log(operationName);  //Last operation name
+      console.log(lastElement);  // Last number we enter
+       // console.log(k); 
+        eq = true;
+      }else{
+        console.log("equal");
+        result = result + operationName + lastElement;
+        
+
+      }
+
+     
+      result = eval(result);  
+      document.getElementById("result").value = result;  
+      
+      
+    };
+
+
+
+    var self = this;
+
+    elem.onclick = function(e) {
+      var tmp = '';
+      var target = e.target;
+      var action = target.getAttribute('data-action');
+      var operation = target.getAttribute('data-operation');
+
+      if (action) {
+        self[action]();
+      } else {
+        var val = target.value;
+
+           result += val;
+           // console.log( 'AA' ); 
+       
+               
+          document.getElementById("showOperation").value = result;
+             //console.log(result);
+
+
+      }
+
+      if (operation) {
+        operationName = operation; 
+        
+      }
+
+
+    
+  };
+}
+new Calculator(calculator);
+
+</script>
+      </div>   
+  
+  </div>  
+  <!-- end of wrapper --> 
+   
+</body>
+</html>

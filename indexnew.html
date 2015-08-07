@@ -121,19 +121,11 @@
 
 <script type="text/javascript">
   var result = "";
-  var tempPlus;
   var operationName;
   var memoryValue; 
   var eq = false;
-  var leftPart;
-  var rightPart;
-  var doubleEq = false;
-  var lTemp;
-  var rTemp;
-  var oTemp;
-  var resTemp;
   var tmpRes;
-  var re = (/\D/);
+  var regEx = (/\D/);
   var lastElement;
   var splits; 
 
@@ -142,7 +134,7 @@
     this.equal = function() {   
       if(!eq) {
         tmpRes = result;
-        splits = tmpRes.toString().split(re);
+        splits = tmpRes.toString().split(regEx);
         lastElement = splits.pop();
         eq = true;
       }else{
@@ -152,6 +144,34 @@
       result = eval(result);  
       document.getElementById("result").value = result;    
       
+    };
+
+    this.clear = function() {
+      result = "";
+      eq = false;
+      document.getElementById("result").value = 0;
+    };
+
+    this.memoryc = function() {
+      memoryValue = "";
+      document.getElementById("mr").value = ""; 
+    };
+
+    this.memoryr = function() {
+      if(memoryValue){
+          document.getElementById("result").value = memoryValue;
+          result = result + memoryValue ;
+        }else {
+          document.getElementById("result").value = result;
+        }      
+    };
+
+    this.memorys = function() {
+      if(operationName){
+        memoryValue = result;
+        document.getElementById("mr").value = "M"; 
+      }
+
     };
 
     var self = this;

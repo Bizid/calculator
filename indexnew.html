@@ -128,103 +128,31 @@
   var leftPart;
   var rightPart;
   var doubleEq = false;
-
-
   var lTemp;
   var rTemp;
   var oTemp;
   var resTemp;
-
-
   var tmpRes;
   var re = (/\D/);
-    var lastElement;
-    var splits;
-
-  //save everything in oneString
-
-  function calcEverything (sInput) {
-    //take what we have in sInput and calculate 
-    console.log();
-  }
-
-
-
-
-
-  function calc(x, operationName, y){
-    x = parseInt(x);
-    y = parseInt(y); 
-      switch(operationName){
-         case 'operationPlus': return x + y; 
-         case 'operationMinus': return x - y;
-         case 'operationDivide': return x / y;
-         case 'operationMultiply': return x * y;
-      }
-  };
-
-  function saveTemp(tempOperationName){
-    if(eq) {
-      operationName = tempOperationName; 
-      document.getElementById("result").value = 0; 
-      doubleEq = true;
-      tempPlus = result;
-    }
-
-    if(tempPlus){
-        switch(tempOperationName){
-           case 'operationPlus':  tempPlus = parseInt(tempPlus) + parseInt(result); 
-           case 'operationMinus':  tempPlus = parseInt(tempPlus) - parseInt(result);
-           case 'operationDivide':  tempPlus = parseInt(tempPlus) / parseInt(result);
-           case 'operationMultiply':  tempPlus = parseInt(tempPlus) * parseInt(result);
-        }         
-
-      } else {
-        tempPlus = result;
-
-      }
-
-      result = 0;
-
-      operationName = tempOperationName;  
-
-      return result, tempPlus, operationName;
-  };
+  var lastElement;
+  var splits; 
 
   function Calculator(elem) {
     
-
     this.equal = function() {   
-      //console.log("esult");    
-      //console.log(result); 
-      //   console.log("after");    
-      //   console.log(result); 
       if(!eq) {
-        console.log("not equal");
-        // console.log(lastElement);  // Last number we enter
         tmpRes = result;
-       splits = tmpRes.toString().split(re);
-      //console.log(splits);
-      lastElement = splits.pop();
-      console.log(operationName);  //Last operation name
-      console.log(lastElement);  // Last number we enter
-       // console.log(k); 
+        splits = tmpRes.toString().split(re);
+        lastElement = splits.pop();
         eq = true;
       }else{
-        console.log("equal");
-        result = result + operationName + lastElement;
-        
+        result = result + operationName + lastElement;      
 
-      }
-
-     
+      }     
       result = eval(result);  
-      document.getElementById("result").value = result;  
-      
+      document.getElementById("result").value = result;    
       
     };
-
-
 
     var self = this;
 
@@ -238,23 +166,14 @@
         self[action]();
       } else {
         var val = target.value;
-
-           result += val;
-           // console.log( 'AA' ); 
-       
-               
-          document.getElementById("showOperation").value = result;
-             //console.log(result);
-
-
+        result += val;                       
+        document.getElementById("showOperation").value = result;
       }
 
       if (operation) {
         operationName = operation; 
-        
+        eq = false;        
       }
-
-
     
   };
 }

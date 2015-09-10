@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--[if IE 7 ]><html class="ie7 oldie"><![endif]-->
-<!--[if IE 8 ]><html class="ie8 oldie"><![endif]-->
-<!--[if IE 9 ]><html class="ie9 oldie"><![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html><!--<![endif]-->
+<html>
 <head>
   <title>Calculator</title>
   <meta charset="utf-8">
@@ -14,7 +11,7 @@
     border: 1px solid #ccc;
     float: left;
     width: 340px;
-    height: 290px;
+    height: 330px;
     padding: 20px 10px;
     background-color: grey;
   }
@@ -22,7 +19,7 @@
   .input-area   {
     float: left;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
   input {
     float: left;
@@ -31,6 +28,7 @@
     padding: 5px;
     height: 40px;
     border: 1px solid #ccc;
+    border-top: 0;
     border-left: 0;
     text-align: right;
     font-size: 14px;
@@ -42,9 +40,21 @@
     padding: 5px;
     height: 40px;
     border: 1px solid #ccc;
+    border-top: 0;
     border-right: 0;
     text-align: left;
     font-size: 14px;
+  }
+  input#showOperation {
+    float: left;
+    width: 240px;
+    margin: 0 0 0 40px;
+    padding: 5px;
+    height: 15px;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    text-align: right;
+    font-size: 12px;
   }
   ul {
     float: left;
@@ -63,6 +73,9 @@
     height: 25px;
     cursor: pointer;
   }
+  [data-action] {
+    background: rgb(135, 130, 139);
+  }
 
   </style>
 
@@ -71,11 +84,24 @@
   <!-- wrapper -->
   <div id="wrapper" >
       <div class="output-area">
+        <input type="text" id="showOperation">
         <input type="text" id="mr">
         <input type="text" id="result" value="0">
       </div>
       <div class="input-area">
         <ul id="calculator">
+          
+          <li><button data-action="memoryc">Mc</button></li>
+          <li><button data-action="memoryr">Mr</button></li>
+          <li><button data-action="memorys">Ms</button></li>
+          <li><button data-action="clear">C</button></li>
+
+          <li><button data-operation="+" value="+">+</button></li>
+          <li><button data-operation="-" value="-">-</button></li>
+          <li><button data-operation="*" value="*">*</button></li>
+          <li><button data-operation="/" value="/">/</button></li>                 
+          <li><button data-action="equal">=</button></li>
+
           <li><button value="1">1</button></li>
           <li><button value="2">2</button></li>
           <li><button value="3">3</button></li>
@@ -87,131 +113,51 @@
           <li><button value="9">9</button></li>
           <li><button value="0">0</button></li>
           <li><button value=".">.</button></li>
-          <li><button data-action="plus">+</button></li>
-          <li><button data-action="minus">-</button></li>
-          <li><button data-action="multiply">*</button></li>
-          <li><button data-action="divide">/</button></li>         
-          <li><button data-action="clear">c</button></li>
-          <li><button data-action="memoryc">MC</button></li>
-          <li><button data-action="memoryr">MR</button></li>
-          <li><button data-action="memorys">MS</button></li>
-          <li><button data-action="equal">=</button></li>
+          
         </ul>        
 
 <script type="text/javascript">
-  var result;
-  var tempPlus;
+  var result = "";
   var operationName;
   var memoryValue; 
   var eq = false;
-  var leftPart;
-  var rightPart;
-  var doubleEq = false;
-
-  function calc(x, operationName, y){
-    x = parseInt(x);
-    y = parseInt(y); 
-      switch(operationName){
-         case 'operationPlus': return x + y; 
-         case 'operationMinus': return x - y;
-         case 'operationDivide': return x / y;
-         case 'operationMultiply': return x * y;
-      }
-  };
-
-  function saveTemp(tempOperationName){
-    if(eq) {
-      console.log("sdfs");
-      console.log(tempOperationName);
-      operationName = tempOperationName; 
-      console.log(operationName);
-      console.log(result);
-      console.log("tempPlus");
-
-      console.log(tempPlus);
-      document.getElementById("result").value = 0; 
-      doubleEq = true;
-    }
-
-    if(tempPlus){
-        switch(tempOperationName){
-           case 'operationPlus': return tempPlus = parseInt(tempPlus) + parseInt(result); 
-           case 'operationMinus': return tempPlus = parseInt(tempPlus) - parseInt(result);
-           case 'operationDivide': return tempPlus = parseInt(tempPlus) / parseInt(result);
-           case 'operationMultiply': return tempPlus = parseInt(tempPlus) * parseInt(result);
-        }         
-
-      } else {
-        tempPlus = result;
-      }
-      result = 0;
-      operationName = tempOperationName;  
-
-      console.log("After");
-      console.log(tempOperationName); 
-      console.log(operationName);
-      console.log(result);
-
-      console.log(tempPlus);
-      return result, tempPlus, operationName;
-  };
+  var tmpRes;
+  var regEx = (/\D/);
+  var lastElement;
+  var splits; 
 
   function Calculator(elem) {
     
-    this.plus = function() {
-      saveTemp ("operationPlus");   
-    };
+    this.equal = function() {   
+      if(!eq) {
+        tmpRes = result;
+        splits = tmpRes.toString().split(regEx);
+        lastElement = splits.pop();
+        eq = true;
+      }else{
+        result = result + operationName + lastElement;      
 
-    this.minus = function() {
-      saveTemp("operationMinus");     
-    };
-
-    this.multiply = function() {
-      saveTemp("operationMultiply");      
-    };
-
-    this.divide = function() {
-      saveTemp("operationDivide");      
-    };
-
-    this.equal = function() {      
-      if(eq) {
-          var resultCalc = calc(result,operationName , rightPart);
-          document.getElementById("result").value = resultCalc; 
-          result = resultCalc;
-        } else {
-          rightPart = result;
-          var tempCalc = calc(tempPlus,operationName , result);
-          document.getElementById("result").value = tempCalc; 
-          result = tempCalc;
-        // tempPlus = result;
-          eq = true;
-        }
-        console.log(rightPart);
-        console.log(result);
-        console.log(tempCalc);
+      }     
+      result = eval(result);  
+      document.getElementById("result").value = result;    
+      
     };
 
     this.clear = function() {
-      //console.log( 'clear' );
-      result = undefined;
-      tempPlus = undefined;
+      result = "";
       eq = false;
-      doubleEq = false;
       document.getElementById("result").value = 0;
     };
 
     this.memoryc = function() {
-     // console.log( 'memoryc' );
-      memoryValue = undefined;
+      memoryValue = "";
       document.getElementById("mr").value = ""; 
     };
 
     this.memoryr = function() {
-      //console.log( 'memoryr' );
       if(memoryValue){
           document.getElementById("result").value = memoryValue;
-          result = memoryValue ;
+          result = result + memoryValue ;
         }else {
           document.getElementById("result").value = result;
         }      
@@ -219,7 +165,6 @@
 
     this.memorys = function() {
       if(operationName){
-        //console.log( 'memorys' );
         memoryValue = result;
         document.getElementById("mr").value = "M"; 
       }
@@ -229,28 +174,24 @@
     var self = this;
 
     elem.onclick = function(e) {
+      var tmp = '';
       var target = e.target;
       var action = target.getAttribute('data-action');
+      var operation = target.getAttribute('data-operation');
+
       if (action) {
         self[action]();
       } else {
         var val = target.value;
-        if(result){
-          if (doubleEq) {
-            result = val;
-            console.log( 'CC' );
-          }else {
-            result += val;
-            console.log( 'AA' );  
-          }
-          
+        result += val;                       
+        document.getElementById("showOperation").value = result;
+      }
 
-        }  else {
-          result = val;
-          console.log( 'BB' );
-        }        
-      document.getElementById("result").value = result;
-    }   
+      if (operation) {
+        operationName = operation; 
+        eq = false;        
+      }
+    
   };
 }
 new Calculator(calculator);
